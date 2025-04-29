@@ -59,14 +59,6 @@ for action in actions:
     print(action)
 # Liste des combinaisons d'actions
 combinaisons = []
-
-
-def rechercher_combinaison(combinaisons, investissement_max):
-    resultat = []
-    cout_total = 0
-    for action in combinaisons:
-        cout_total += action.cout
-        resultat.append(action)
-        if cout_total > investissement_max:
-            break
-    return resultat
+# Nombre d'actions
+n = len(actions)
+# Boucle pour générer toutes les combinaisons d'actions
