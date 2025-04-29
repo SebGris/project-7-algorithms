@@ -11,12 +11,16 @@ class Action:
     @property
     def benefice_euros(self):
         """
-        Calcule le bénéfice en euros basé sur le coût et le pourcentage de bénéfice.
+        Calcule le bénéfice en euros basé sur le coût
+        et le pourcentage de bénéfice.
         """
         return round(self.cout * (self.benefPourcent / 100), 2)
 
     def __str__(self):
-        return f"Action({self.nom}, {self.cout}, {self.benefPourcent}, {self.benefice_euros})"
+        return (
+            f"Action({self.nom}, {self.cout}, {self.benefPourcent}, "
+            f"{self.benefice_euros})"
+        )
 
 
 def load_actions_from_csv(file_path):
@@ -49,7 +53,6 @@ def load_actions_from_csv(file_path):
 csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
 # Liste des actions
 actions = load_actions_from_csv(csv_file)
-
 # Affichage des actions
 print("Liste des actions :")
 for action in actions:
