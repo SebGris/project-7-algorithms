@@ -70,3 +70,11 @@ def rechercher_combinaison(combinaisons, investissement_max):
         if cout_total > investissement_max:
             break
     return resultat
+
+
+def rechercher_toute_combinaison(combinaisons):
+    resultat = []
+    premier = combinaisons.pop(0)
+    resultat.append(premier)
+    for i in range(1, len(combinaisons)):
+        resultat
