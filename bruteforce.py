@@ -1,8 +1,8 @@
 import csv
 from itertools import combinations
+from tqdm import tqdm
 
 
-# classe Action
 class Action:
     def __init__(self, nom, cout, benefPourcent):
         self.nom = nom
@@ -50,53 +50,58 @@ def load_actions_from_csv(file_path):
     return actions
 
 
-def calcule_cout(indices):
-    cout_total = 0
-    for indice in indices:
-        cout_total += actions[indice].cout
-    return cout_total
-
-
 # Chemin vers le fichier CSV
 csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
 # Liste des actions
 actions = load_actions_from_csv(csv_file)
-# Affichage des actions
-print("Liste des actions :")
-for action in actions:
-    print(action)
-# Indices des actions à combiner
-indices = range(0, len(actions))
 
 
-def generate_combinations(liste, investissement_max=500):
+def generate_combinations(actions, investissement_max=500):
+    """
+    Génère toutes les combinaisons possibles d'actions respectant le budget.
+    :param actions: Liste d'objets Action
+    :param investissement_max: Budget maximum (en euros)
+    :return: Liste des combinaisons sous forme de tuples (noms_actions, cout_total, benefice)
+    """
     combinaisons = []  # Liste pour stocker les combinaisons
-    # boucle sur le nombre d'éléments dans chaque combinaison
-    for i in range(1, len(liste) + 1):
-        # utilise itertools.combinations pour générer les combinaisons
-        for combinaison in combinations(liste, i):
-            # calcule le coût total de la combinaison
-            cout_total = sum(actions[indice].cout for indice in combinaison)
-            if cout_total <= investissement_max:
-                # Ajoute la combinaison (avec noms des actions) à la liste
-                noms_actions = [actions[indice].nom for indice in combinaison]
-                benefice = sum(
-                    actions[indice].benefice_euros for indice in combinaison
-                )
-                combinaisons.append((noms_actions, cout_total, benefice))
+    total_combinations = sum(len(list(combinations(actions, i))) for i in range(1, len(actions) + 1))
+    # Utilisation de tqdm pour afficher la progression
+    with tqdm(total=total_combinations, desc="Génération des combinaisons") as pbar:
+        for i in range(1, len(actions) + 1):
+            for combinaison in combinations(actions, i):
+                cout_total = sum(action.cout for action in combinaison)
+                if cout_total <= investissement_max:
+                    noms_actions = [action.nom for action in combinaison]
+                    benefice = sum(action.benefice_euros for action in combinaison)
+                    combinaisons.append((noms_actions, cout_total, benefice))
+                pbar.update(1)  # Mise à jour de la jauge d'avancement
     return combinaisons  # Retourne la liste des combinaisons
 
 
 # Appel de la fonction et affichage du résultat
-resultat = generate_combinations(indices)
+resultat = generate_combinations(actions)
 # Trie les résultats par bénéfice décroissant
 resultat_trie = sorted(resultat, key=lambda x: x[2], reverse=True)
 
 # Affichage formaté sous forme de tableau
-print("Combinaisons d'actions respectant le budget (triées par bénéfice) :")
-print(f"{'Actions':<80} {'Coût total (€)':<15} {'Bénéfice (€)':<15}")
-print("-" * 110)
-for combinaison, cout_total, benefice in resultat_trie:
-    actions_str = " ".join(combinaison)
-    formatted_line = f"{actions_str:<80} {cout_total:<15} {benefice:.2f}"
-    print(formatted_line.replace('.', ','))
+output_file = "resultat_combinations.txt"
+with open(output_file, mode="w", encoding="utf-8") as file:
+    header = f"{'Actions':<145} {'Coût total (€)':<15} {'Bénéfice (€)':<15}\n"
+    separator = "-" * 175 + "\n"
+    file.write(
+        "Combinaisons d'actions respectant le budget "
+        "(triées par bénéfice) :\n"
+    )
+    file.write(header)
+    file.write(separator)
+    # Ajout de la jauge de progression pour l'écriture
+    with tqdm(total=len(resultat_trie), desc="Écriture dans le fichier") as pbar:
+        for noms_actions, cout_total, benefice in resultat_trie:
+            actions_str = " ".join(noms_actions)
+            formatted_line = (
+                f"{actions_str:<145} {cout_total:<15} {benefice:.2f}"
+            ).replace('.', ',')
+            file.write(formatted_line + "\n")
+            pbar.update(1)  # Mise à jour de la jauge d'avancement
+
+print(f"Résultat écrit dans le fichier : {output_file}")
