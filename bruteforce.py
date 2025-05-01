@@ -1,4 +1,5 @@
 import csv
+from itertools import combinations
 
 
 # classe Action
@@ -49,6 +50,13 @@ def load_actions_from_csv(file_path):
     return actions
 
 
+def calcule_cout(indices):
+    cout_total = 0
+    for indice in indices:
+        cout_total += actions[indice].cout
+    return cout_total
+
+
 # Chemin vers le fichier CSV
 csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
 # Liste des actions
@@ -57,24 +65,37 @@ actions = load_actions_from_csv(csv_file)
 print("Liste des actions :")
 for action in actions:
     print(action)
-# Liste des combinaisons d'actions
-combinaisons = []
+# Indices des actions à combiner
+indices = range(0, 9)
 
 
-def rechercher_combinaison(combinaisons, investissement_max):
-    resultat = []
-    cout_total = 0
-    for action in combinaisons:
-        cout_total += action.cout
-        resultat.append(action)
-        if cout_total > investissement_max:
-            break
-    return resultat
+def generate_combinations(liste, investissement_max=500):
+    combinaisons = []  # Liste pour stocker les combinaisons
+    # boucle sur le nombre d'éléments dans chaque combinaison
+    for i in range(1, len(liste) + 1):
+        # utilise itertools.combinations pour générer les combinaisons
+        for combinaison in combinations(liste, i):
+            # calcule le coût total de la combinaison
+            cout_total = sum(actions[indice].cout for indice in combinaison)
+            if cout_total <= investissement_max:
+                # Ajoute la combinaison (avec noms des actions) à la liste
+                noms_actions = [actions[indice].nom for indice in combinaison]
+                benefice = sum(
+                    actions[indice].benefice_euros for indice in combinaison
+                )
+                combinaisons.append((noms_actions, cout_total, benefice))
+    return combinaisons  # Retourne la liste des combinaisons
 
 
-def rechercher_toute_combinaison(combinaisons):
-    resultat = []
-    premier = combinaisons.pop(0)
-    resultat.append(premier)
-    for i in range(1, len(combinaisons)):
-        resultat
+# Appel de la fonction et affichage du résultat
+resultat = generate_combinations(indices)
+# Trie les résultats par bénéfice décroissant
+resultat_trie = sorted(resultat, key=lambda x: x[2], reverse=True)
+
+# Affichage formaté sous forme de tableau
+print("Combinaisons d'actions respectant le budget (triées par bénéfice) :")
+print(f"{'Actions':<80} {'Coût total (€)':<15} {'Bénéfice (€)':<15}")
+print("-" * 110)
+for combinaison, cout_total, benefice in resultat_trie:
+    actions_str = " ".join(combinaison)
+    print(f"{actions_str:<80} {cout_total:<15} {benefice:.2f}".replace('.', ','))
