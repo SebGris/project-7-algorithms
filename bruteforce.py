@@ -66,7 +66,7 @@ print("Liste des actions :")
 for action in actions:
     print(action)
 # Indices des actions à combiner
-indices = range(0, 9)
+indices = range(0, len(actions))
 
 
 def generate_combinations(liste, investissement_max=500):
@@ -98,4 +98,5 @@ print(f"{'Actions':<80} {'Coût total (€)':<15} {'Bénéfice (€)':<15}")
 print("-" * 110)
 for combinaison, cout_total, benefice in resultat_trie:
     actions_str = " ".join(combinaison)
-    print(f"{actions_str:<80} {cout_total:<15} {benefice:.2f}".replace('.', ','))
+    formatted_line = f"{actions_str:<80} {cout_total:<15} {benefice:.2f}"
+    print(formatted_line.replace('.', ','))
