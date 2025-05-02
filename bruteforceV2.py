@@ -101,7 +101,9 @@ def generate_combinations(actions, investissement_max=500):
     """
     combinaisons = []  # Liste pour stocker les combinaisons
     total_combinations = sum(
-        binomial_coefficient(len(actions), i)  # Utilisation du coefficient binomial
+        binomial_coefficient(
+            len(actions), i
+        )  # Utilisation du coefficient binomial
         for i in range(1, len(actions) + 1)
     )
     # Utilisation de tqdm pour afficher la progression
