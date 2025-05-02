@@ -1,5 +1,4 @@
 import csv
-from itertools import combinations
 from tqdm import tqdm
 import time  # Importation du module time pour mesurer le temps d'exécution
 
@@ -51,6 +50,33 @@ csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
 actions = load_actions_from_csv(csv_file)
 
 
+def custom_combinations(actions, r):
+    """
+    Génère toutes les combinaisons possibles de longueur r
+    à partir de la liste d'actions.
+
+    :param actions: Liste d'objets Action
+    :param r: Taille de la combinaison
+    :return: Liste de combinaisons
+    """
+    if r == 0:
+        return [[]]  # Une seule combinaison possible : la liste vide
+        # On retourne [[]] car cela représente une combinaison valide (vide).
+        # Si on retournait [], cela signifierait qu'il n'y a aucune combinaison possible.
+    if not actions:
+        return []  # Pas de combinaisons possibles si la liste est vide
+
+    # Inclure la première action dans la combinaison
+    with_first = [
+        [actions[0]] + combinaison
+        for combinaison in custom_combinations(actions[1:], r - 1)
+    ]
+    # Exclure la première action de la combinaison
+    without_first = custom_combinations(actions[1:], r)
+
+    return with_first + without_first
+
+
 def generate_combinations(actions, investissement_max=500):
     """
     Génère toutes les combinaisons possibles d'actions respectant le budget.
@@ -62,7 +88,8 @@ def generate_combinations(actions, investissement_max=500):
     """
     combinaisons = []  # Liste pour stocker les combinaisons
     total_combinations = sum(
-        len(list(combinations(actions, i))) for i in range(1, len(actions) + 1)
+        len(custom_combinations(actions, i))
+        for i in range(1, len(actions) + 1)
     )
     # Utilisation de tqdm pour afficher la progression
     with tqdm(
@@ -70,7 +97,7 @@ def generate_combinations(actions, investissement_max=500):
         desc="Génération des combinaisons"
     ) as pbar:
         for i in range(1, len(actions) + 1):
-            for combinaison in combinations(actions, i):
+            for combinaison in custom_combinations(actions, i):
                 cout_total = sum(action.cout for action in combinaison)
                 if cout_total <= investissement_max:
                     noms_actions = [action.nom for action in combinaison]
@@ -90,6 +117,7 @@ combinations_generation_time = time.time() - start_time
 print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
 # Trie les résultats par bénéfice décroissant
 resultat_trie = sorted(resultat, key=lambda x: x[2], reverse=True)
+
 # Affichage formaté sous forme de tableau
 output_file = "resultat_combinations.txt"
 with open(output_file, mode="w", encoding="utf-8") as file:

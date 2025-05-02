@@ -17,12 +17,6 @@ class Action:
         """
         return round(self.cout * (self.benefPourcent / 100), 2)
 
-    def __str__(self):
-        return (
-            f"Action({self.nom}, {self.cout}, {self.benefPourcent}, "
-            f"{self.benefice_euros})"
-        )
-
 
 def load_actions_from_csv(file_path):
     """
