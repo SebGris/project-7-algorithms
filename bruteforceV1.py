@@ -1,6 +1,7 @@
 import csv
 from itertools import combinations
 from tqdm import tqdm
+import time  # Importation du module time pour mesurer le temps d'exécution
 
 
 class Action:
@@ -59,30 +60,42 @@ actions = load_actions_from_csv(csv_file)
 def generate_combinations(actions, investissement_max=500):
     """
     Génère toutes les combinaisons possibles d'actions respectant le budget.
+
     :param actions: Liste d'objets Action
     :param investissement_max: Budget maximum (en euros)
-    :return: Liste des combinaisons sous forme de tuples (noms_actions, cout_total, benefice)
+    :return: Liste des combinaisons sous forme de tuples
+             (noms_actions, cout_total, benefice)
     """
     combinaisons = []  # Liste pour stocker les combinaisons
-    total_combinations = sum(len(list(combinations(actions, i))) for i in range(1, len(actions) + 1))
+    total_combinations = sum(
+        len(list(combinations(actions, i))) for i in range(1, len(actions) + 1)
+    )
     # Utilisation de tqdm pour afficher la progression
-    with tqdm(total=total_combinations, desc="Génération des combinaisons") as pbar:
+    with tqdm(
+        total=total_combinations,
+        desc="Génération des combinaisons"
+    ) as pbar:
         for i in range(1, len(actions) + 1):
             for combinaison in combinations(actions, i):
                 cout_total = sum(action.cout for action in combinaison)
                 if cout_total <= investissement_max:
                     noms_actions = [action.nom for action in combinaison]
-                    benefice = sum(action.benefice_euros for action in combinaison)
+                    benefice = sum(
+                        action.benefice_euros for action in combinaison
+                    )
                     combinaisons.append((noms_actions, cout_total, benefice))
                 pbar.update(1)  # Mise à jour de la jauge d'avancement
     return combinaisons  # Retourne la liste des combinaisons
 
 
-# Appel de la fonction et affichage du résultat
+# Mesure du temps d'exécution
+start_time = time.time()
 resultat = generate_combinations(actions)
+print(f"Nombre total de combinaisons générées : {len(resultat)}")
+combinations_generation_time = time.time() - start_time
+print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
 # Trie les résultats par bénéfice décroissant
 resultat_trie = sorted(resultat, key=lambda x: x[2], reverse=True)
-
 # Affichage formaté sous forme de tableau
 output_file = "resultat_combinations.txt"
 with open(output_file, mode="w", encoding="utf-8") as file:
@@ -95,7 +108,10 @@ with open(output_file, mode="w", encoding="utf-8") as file:
     file.write(header)
     file.write(separator)
     # Ajout de la jauge de progression pour l'écriture
-    with tqdm(total=len(resultat_trie), desc="Écriture dans le fichier") as pbar:
+    with tqdm(
+        total=len(resultat_trie),
+        desc="Écriture dans le fichier"
+    ) as pbar:
         for noms_actions, cout_total, benefice in resultat_trie:
             actions_str = " ".join(noms_actions)
             formatted_line = (
@@ -104,4 +120,9 @@ with open(output_file, mode="w", encoding="utf-8") as file:
             file.write(formatted_line + "\n")
             pbar.update(1)  # Mise à jour de la jauge d'avancement
 
+execution_time = time.time() - start_time - combinations_generation_time
+print(f"Temps d'exécution : {execution_time:.2f} secondes")
+# Calcul et affichage du temps d'exécution
+execution_time = time.time() - start_time
 print(f"Résultat écrit dans le fichier : {output_file}")
+print(f"Temps d'exécution total : {execution_time:.2f} secondes")
