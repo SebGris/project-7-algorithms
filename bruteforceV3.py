@@ -76,7 +76,7 @@ def custom_combinations(actions, r):
     # Exclure la première action de la combinaison
     without_first = custom_combinations(actions[1:], r)
 
-    return with_first + without_first
+    return with_first + without_first  # idem que extend mais plus lisible
 
 
 def binomial_coefficient(n, k):
