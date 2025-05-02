@@ -1,5 +1,6 @@
 # Projet algo
 1) Solution brute-force
+
 Un algorithme qui maximisera le profit réalisé par nos clients après deux ans d'investissement.
 Nous avons les contraintes suivantes :
 Chaque action ne peut être achetée qu'une seule fois.
@@ -8,6 +9,7 @@ Nous pouvons dépenser au maximum 500 euros par client.
 Livrable dans bruteforce.py
 
 2) Optimisez l'algorithme
+
 Le programme doit fournir une réponse en moins d'une seconde.
 Livrable dans optimized.py
 et Un jeu de diapositives contenant les éléments suivants : 
