@@ -70,6 +70,8 @@ def custom_combinations(actions, r):
             if indices[i] != i + n - r:
                 break
         else:
+            # Le bloc else est exécuté si la boucle for se termine sans rencontrer de break.
+            # Cela signifie que toutes les combinaisons possibles ont été générées.
             return result
         indices[i] += 1
         for j in range(i + 1, r):
