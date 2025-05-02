@@ -2,6 +2,7 @@ import csv
 from itertools import combinations
 from tqdm import tqdm
 import time  # Importation du module time pour mesurer le temps d'exécution
+from math import comb  # Importation de comb pour calculer les coefficients binomiaux
 
 
 class Action:
@@ -62,8 +63,8 @@ def generate_combinations(actions, investissement_max=500):
     """
     combinaisons = []  # Liste pour stocker les combinaisons
     total_combinations = sum(
-        len(list(combinations(actions, i))) for i in range(1, len(actions) + 1)
-    )
+        comb(len(actions), i) for i in range(1, len(actions) + 1)
+    )  # Calcul optimisé
     # Utilisation de tqdm pour afficher la progression
     with tqdm(
         total=total_combinations,

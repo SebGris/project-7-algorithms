@@ -1,6 +1,7 @@
 import csv
 from tqdm import tqdm
 import time  # Importation du module time pour mesurer le temps d'exécution
+import math  # Importation pour calculer les coefficients binomiaux
 
 
 class Action:
@@ -62,7 +63,8 @@ def custom_combinations(actions, r):
     if r == 0:
         return [[]]  # Une seule combinaison possible : la liste vide
         # On retourne [[]] car cela représente une combinaison valide (vide).
-        # Si on retournait [], cela signifierait qu'il n'y a aucune combinaison possible.
+        # Si on retournait [], cela signifierait qu'il n'y a aucune combinaison
+        # possible.
     if not actions:
         return []  # Pas de combinaisons possibles si la liste est vide
 
@@ -77,6 +79,19 @@ def custom_combinations(actions, r):
     return with_first + without_first
 
 
+def binomial_coefficient(n, k):
+    """
+    Calcule le coefficient binomial "n choose k".
+
+    :param n: Nombre total d'éléments
+    :param k: Taille de la combinaison
+    :return: Nombre de combinaisons possibles
+    """
+    if k > n:
+        return 0
+    return math.comb(n, k)
+
+
 def generate_combinations(actions, investissement_max=500):
     """
     Génère toutes les combinaisons possibles d'actions respectant le budget.
@@ -88,7 +103,9 @@ def generate_combinations(actions, investissement_max=500):
     """
     combinaisons = []  # Liste pour stocker les combinaisons
     total_combinations = sum(
-        len(custom_combinations(actions, i))
+        binomial_coefficient(
+            len(actions), i
+        )  # Utilisation du coefficient binomial
         for i in range(1, len(actions) + 1)
     )
     # Utilisation de tqdm pour afficher la progression
