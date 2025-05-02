@@ -12,6 +12,7 @@ Livrable dans bruteforce.py
 
 Le programme doit fournir une réponse en moins d'une seconde.
 Livrable dans optimized.py et
+
 un jeu de diapositives contenant les éléments suivants : 
 - Une analyse de votre algorithme de force brute 
 - Un diagramme, un organigramme ou un pseudocode décrivant le processus de réflexion qui sous-tend la solution optimisée 
