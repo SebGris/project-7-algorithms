@@ -49,7 +49,7 @@ def calculate_total_cost(combinaison):
     return sum(action.cout for action in combinaison)
 
 
-def generate_combinations(liste_actions, budget_max):
+def generate_combinations(action_list, budget_max):
     """
     Génère toutes les combinaisons possibles d'actions respectant le budget.
 
@@ -59,7 +59,7 @@ def generate_combinations(liste_actions, budget_max):
              (noms_actions, cout_total, benefice)
     """
     combinaisons = []
-    n = len(liste_actions)
+    n = len(action_list)
     total_combinations = sum(comb(n, i) for i in range(1, n + 1))
     # Utilisation de tqdm pour afficher la progression
     with tqdm(
@@ -67,12 +67,12 @@ def generate_combinations(liste_actions, budget_max):
         desc="Génération des combinaisons"
     ) as progress_bar:
         for i in range(1, n + 1):
-            for combinaison in combinations(liste_actions, i):
-                cout_total = calculate_total_cost(combinaison)
-                if cout_total <= budget_max:
-                    noms_actions = [action.nom for action in combinaison]
-                    benefice = calculate_profit(combinaison)
-                    combinaisons.append((noms_actions, cout_total, benefice))
+            for combinaison in combinations(action_list, i):
+                total_cost = calculate_total_cost(combinaison)
+                if total_cost <= budget_max:
+                    action_names = [action.nom for action in combinaison]
+                    profit = calculate_profit(combinaison)
+                    combinaisons.append((action_names, total_cost, profit))
                 progress_bar.update(1)
     return combinaisons
 
@@ -111,10 +111,10 @@ def main():
             total=len(results),
             desc="Écriture dans le fichier"
         ) as progress_bar:
-            for noms_actions, cout_total, benefice in results:
-                actions_str = " ".join(noms_actions)
+            for action_names, total_cost, profit in results:
+                actions_str = " ".join(action_names)
                 formatted_line = (
-                    f"{actions_str:<145} {cout_total:<15} {benefice:.2f}"
+                    f"{actions_str:<145} {total_cost:<15} {profit:.2f}"
                 ).replace('.', ',')
                 file.write(formatted_line + "\n")
                 progress_bar.update(1)
