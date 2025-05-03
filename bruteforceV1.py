@@ -1,9 +1,8 @@
 import csv
+import time
 from itertools import combinations
+from math import comb  # Importation pour calculer les coefficients binomiaux
 from tqdm import tqdm
-import time  # Importation du module time pour mesurer le temps d'exécution
-from math import comb  # Importation de comb pour calculer les coefficients
-# binomiaux
 
 
 class Action:

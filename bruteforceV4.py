@@ -1,7 +1,7 @@
 import csv
-from tqdm import tqdm
-import time  # Importation du module time pour mesurer le temps d'exécution
 import math  # Importation pour calculer les coefficients binomiaux
+import time
+from tqdm import tqdm
 
 
 class Action:
