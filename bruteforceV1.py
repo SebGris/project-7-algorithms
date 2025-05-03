@@ -11,14 +11,7 @@ class Action:
         self.nom = nom
         self.cout = cout
         self.benefPourcent = benefPourcent
-
-    @property
-    def benefice_euros(self):
-        """
-        Calcule le bénéfice en euros basé sur le coût
-        et le pourcentage de bénéfice.
-        """
-        return round(self.cout * (self.benefPourcent / 100), 2)
+        self.benefice_euros = round(cout * (benefPourcent / 100), 2)
 
 
 def load_actions_from_csv(file_path):
@@ -53,7 +46,7 @@ csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
 actions = load_actions_from_csv(csv_file)
 
 
-def generate_combinations(actions, investissement_max=500):
+def generate_combinations(liste_actions, investissement_max=500):
     """
     Génère toutes les combinaisons possibles d'actions respectant le budget.
 
@@ -63,16 +56,17 @@ def generate_combinations(actions, investissement_max=500):
              (noms_actions, cout_total, benefice)
     """
     combinaisons = []  # Liste pour stocker les combinaisons
+    n = len(liste_actions)
     total_combinations = sum(
-        comb(len(actions), i) for i in range(1, len(actions) + 1)
+        comb(n, i) for i in range(1, n + 1)
     )  # Calcul optimisé
     # Utilisation de tqdm pour afficher la progression
     with tqdm(
         total=total_combinations,
         desc="Génération des combinaisons"
     ) as pbar:
-        for i in range(1, len(actions) + 1):
-            for combinaison in combinations(actions, i):
+        for i in range(1, n + 1):
+            for combinaison in combinations(liste_actions, i):
                 cout_total = sum(action.cout for action in combinaison)
                 if cout_total <= investissement_max:
                     noms_actions = [action.nom for action in combinaison]
