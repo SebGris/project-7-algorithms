@@ -9,14 +9,7 @@ class Action:
         self.nom = nom
         self.cout = cout
         self.benefPourcent = benefPourcent
-
-    @property
-    def benefice_euros(self):
-        """
-        Calcule le bénéfice en euros basé sur le coût
-        et le pourcentage de bénéfice.
-        """
-        return round(self.cout * (self.benefPourcent / 100), 2)
+        self.benefice_euros = round(cout * (benefPourcent / 100), 2)
 
 
 def load_actions_from_csv(file_path):
