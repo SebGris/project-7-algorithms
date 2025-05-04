@@ -1,5 +1,6 @@
 import csv
 import time
+from itertools import combinations
 from math import comb
 from tqdm import tqdm
 
@@ -31,10 +32,10 @@ def calculate_profit_and_cost(combinaison):
 
 def generate_combinations(action_list, budget_max):
     combinaisons = []
-    n = len(action_list)
-    total_combinations = sum(comb(n, i) for i in range(1, n + 1))
+    action_count = len(action_list)
+    total_combinations = sum(comb(action_count, i) for i in range(1, action_count + 1))
     with tqdm(total=total_combinations, desc="Génération des combinaisons") as progress_bar:
-        for i in range(1, n + 1):
+        for i in range(1, action_count + 1):
             for combinaison in combinations(action_list, i):
                 total_cost, total_profit = calculate_profit_and_cost(combinaison)
                 if total_cost <= budget_max:
@@ -42,40 +43,6 @@ def generate_combinations(action_list, budget_max):
                 progress_bar.update(1)
     return combinaisons
 
-def combinations(iterable, r):
-    """
-    Génère toutes les combinaisons possibles de longueur r à partir des éléments de l'itérable.
-    
-    Arguments :
-        iterable : Une séquence ou un itérable (par exemple, une liste, une chaîne de caractères).
-        r : La longueur des combinaisons souhaitées.
-    
-    Retourne :
-        Une liste de tuples, où chaque tuple représente une combinaison unique de longueur r.
-    
-    Exemple :
-        combinations('ABCD', 2) --> [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('C', 'D')]
-    """
-    n = len(iterable)  # Nombre total d'éléments dans l'itérable.
-    if r > n:  # Si r est plus grand que n, il n'y a pas de combinaisons possibles.
-        return []
-    indices = list(range(r))  # Indices initiaux pour la première combinaison.
-    # Première combinaison : les r premiers éléments de l'itérable.
-    result = [tuple(iterable[i] for i in indices)]
-    while True:
-        # Trouver le premier indice (en partant de la fin) qui peut être incrémenté.
-        for i in reversed(range(r)):
-            if indices[i] != i + n - r:
-                break
-        else:
-            # Si aucun indice ne peut être incrémenté, toutes les combinaisons ont été générées.
-            return result
-        indices[i] += 1  # Incrémenter l'indice trouvé.
-        # Réinitialiser les indices suivants pour maintenir l'ordre croissant.
-        for j in range(i + 1, r):
-            indices[j] = indices[j - 1] + 1
-        # Ajouter la nouvelle combinaison générée à la liste des résultats.
-        result.append(tuple(iterable[i] for i in indices))
 
 def write_results_to_file(results, output_file):
     header = f"{'Actions':<145} {'Coût total (€)':<15} {'Bénéfice (€)':<15}\n"
@@ -100,11 +67,6 @@ def main():
     write_results_to_file(results, "resultat_combinations.txt")
     print(f"Temps d'exécution total : {time.time() - start_time:.2f} secondes")
 
-def test():
-    test_a = combinations('ABCD', 2)
-    print(test_a)
-
 
 if __name__ == "__main__":
-    #main()
-    test()
+    main()
