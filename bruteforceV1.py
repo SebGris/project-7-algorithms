@@ -14,7 +14,7 @@ class Action:
 
 
 def load_actions_from_csv(file_path):
-    actions = []
+    action_list = []
     with open(file_path, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
@@ -29,8 +29,8 @@ def load_actions_from_csv(file_path):
                 )
             )
             # Ajout de l'action à la liste
-            actions.append(action)
-    return actions
+            action_list.append(action)
+    return action_list
 
 
 # Fonction pour calculer le profit total d'un portefeuille
