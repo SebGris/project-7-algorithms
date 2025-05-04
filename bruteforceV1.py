@@ -14,12 +14,6 @@ class Action:
 
 
 def load_actions_from_csv(file_path):
-    """
-    Charge les actions à partir d'un fichier CSV.
-
-    :param file_path: Chemin vers le fichier CSV
-    :return: Liste d'objets Action
-    """
     actions = []
     with open(file_path, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
@@ -53,10 +47,10 @@ def generate_combinations(action_list, budget_max):
     """
     Génère toutes les combinaisons possibles d'actions respectant le budget.
 
-    :param actions: Liste d'objets Action
-    :param investissement_max: Budget maximum (en euros)
+    :param action_list: Liste d'objets Action
+    :param budget_max: Budget maximum (en euros)
     :return: Liste des combinaisons sous forme de tuples
-             (noms_actions, cout_total, benefice)
+             (action_names, total_cost, profit)
     """
     combinaisons = []
     n = len(action_list)
@@ -83,9 +77,9 @@ def main():
     csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
     # Liste des actions
     action_list = load_actions_from_csv(csv_file)
-    max_budget = 500  # Budget maximal par client
     # Mesure du temps d'exécution
     start_time = time.time()
+    max_budget = 500
     valid_combinations = generate_combinations(action_list, max_budget)
     combinations_generation_time = time.time() - start_time
     print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
