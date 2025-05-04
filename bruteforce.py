@@ -43,29 +43,38 @@ def generate_combinations(action_list, budget_max):
     return combinaisons
 
 def combinations(iterable, r):
-    """Return r length subsequences of elements from the input iterable."""
-    # combinations('ABCD', 2) --> AB AC AD BC BD CD
-    # combinations('ABCD', 3) --> ABC ABD ACD BCD
-    # combinations('ABCD', 4) --> ABCD
-    # combinations('ABCD', 5) --> []
-    n = len(iterable)
-    if r > n:
+    """
+    Génère toutes les combinaisons possibles de longueur r à partir des éléments de l'itérable.
+    
+    Arguments :
+        iterable : Une séquence ou un itérable (par exemple, une liste, une chaîne de caractères).
+        r : La longueur des combinaisons souhaitées.
+    
+    Retourne :
+        Une liste de tuples, où chaque tuple représente une combinaison unique de longueur r.
+    
+    Exemple :
+        combinations('ABCD', 2) --> [('A', 'B'), ('A', 'C'), ('A', 'D'), ('B', 'C'), ('B', 'D'), ('C', 'D')]
+    """
+    n = len(iterable)  # Nombre total d'éléments dans l'itérable.
+    if r > n:  # Si r est plus grand que n, il n'y a pas de combinaisons possibles.
         return []
-    indices = list(range(r))
-    # Donne la première combinaison, de longueur r, en prenant les r premiers éléments de l'itérable.
+    indices = list(range(r))  # Indices initiaux pour la première combinaison.
+    # Première combinaison : les r premiers éléments de l'itérable.
     result = [tuple(iterable[i] for i in indices)]
     while True:
+        # Trouver le premier indice (en partant de la fin) qui peut être incrémenté.
         for i in reversed(range(r)):
             if indices[i] != i + n - r:
                 break
         else:
-            # Le bloc else est exécuté si la boucle for se termine sans
-            # rencontrer de break. Cela signifie que
-            # toutes les combinaisons possibles ont été générées.
+            # Si aucun indice ne peut être incrémenté, toutes les combinaisons ont été générées.
             return result
-        indices[i] += 1
+        indices[i] += 1  # Incrémenter l'indice trouvé.
+        # Réinitialiser les indices suivants pour maintenir l'ordre croissant.
         for j in range(i + 1, r):
             indices[j] = indices[j - 1] + 1
+        # Ajouter la nouvelle combinaison générée à la liste des résultats.
         result.append(tuple(iterable[i] for i in indices))
 
 def write_results_to_file(results, output_file):
