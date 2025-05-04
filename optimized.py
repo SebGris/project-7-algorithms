@@ -1,7 +1,5 @@
 import csv
 import time
-from itertools import combinations
-from math import comb
 from tqdm import tqdm
 
 
@@ -24,24 +22,41 @@ def load_actions_from_csv(file_path):
         ]
 
 
-def calculate_profit_and_cost(combinaison):
-    total_cost = sum(action.cout for action in combinaison)
-    total_profit = sum(action.benefice_euros for action in combinaison)
-    return total_cost, total_profit
-
-
-def generate_combinations(action_list, budget_max):
-    combinaisons = []
+def knapsack_optimization(action_list, budget_max):
+    # Nombre total d'actions
     n = len(action_list)
-    total_combinations = sum(comb(n, i) for i in range(1, n + 1))
-    with tqdm(total=total_combinations, desc="Génération des combinaisons") as progress_bar:
-        for i in range(1, n + 1):
-            for combinaison in combinations(action_list, i):
-                total_cost, total_profit = calculate_profit_and_cost(combinaison)
-                if total_cost <= budget_max:
-                    combinaisons.append(([action.nom for action in combinaison], total_cost, total_profit))
-                progress_bar.update(1)
-    return combinaisons
+
+    # Initialisation d'une table pour la programmation dynamique
+    # dp[i][w] représente le bénéfice maximum réalisable avec les i premières actions et un budget w
+    dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]
+
+      # Iterate over each action
+    for i in range(1, n + 1):
+        action = action_list[i - 1]
+        cost = action.cout
+        profit = action.benefice_euros
+        # Iterate over each possible budget
+        for budget in range(budget_max + 1):
+            if cost <= budget:
+                # Maximum profit including the current action
+                dp[i][budget] = max(dp[i - 1][budget], dp[i - 1][budget - cost] + profit)
+            else:
+                # Maximum profit excluding the current action
+                dp[i][budget] = dp[i - 1][budget]
+
+    # Trace back to find the selected actions
+    selected_actions = []
+    budget = budget_max
+    for i in range(n, 0, -1):
+        if dp[i][budget] != dp[i - 1][budget]:
+            action = action_list[i - 1]
+            selected_actions.append(action.nom)
+            budget -= action.cout
+
+    total_cost = sum(action.cout for action in action_list if action.nom in selected_actions)
+    total_profit = dp[n][budget_max]
+
+    return selected_actions, total_cost, total_profit
 
 
 def write_results_to_file(results, output_file):
@@ -62,11 +77,22 @@ def main():
     action_list = load_actions_from_csv(csv_file)
     start_time = time.time()
     max_budget = 500
-    valid_combinations = generate_combinations(action_list, max_budget)
-    results = sorted(valid_combinations, key=lambda x: x[2], reverse=True)
-    write_results_to_file(results, "resultat_combinations.txt")
-    print(f"Temps d'exécution total : {time.time() - start_time:.2f} secondes")
 
+    # Utilisation de l'optimisation par programmation dynamique
+    selected_actions, total_cost, total_profit = knapsack_optimization(action_list, max_budget)
+    combinations_generation_time = time.time() - start_time
+    print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
+    # Écriture des résultats dans un fichier
+    output_file = "resultat_knapsack.txt"
+    results = [(selected_actions, total_cost, total_profit)]
+    write_results_to_file(results, output_file)
+
+    execution_time = time.time() - start_time - combinations_generation_time
+    print(f"Temps d'exécution : {execution_time:.2f} secondes")
+    # Calcul et affichage du temps d'exécution
+    execution_time = time.time() - start_time
+    print(f"Résultat écrit dans le fichier : {output_file}")
+    print(f"Temps d'exécution total : {execution_time:.2f} secondes")
 
 if __name__ == "__main__":
     main()
