@@ -36,7 +36,7 @@ def generate_combinations(action_list, budget_max):
     total_combinations = sum(comb(action_count, i) for i in range(1, action_count + 1))
     with tqdm(total=total_combinations, desc="Génération des combinaisons") as progress_bar:
         for i in range(1, action_count + 1):
-            for combinaison in combinations(action_list, i):
+            for combinaison in combinations(action_list, i):  # O(2^n)
                 total_cost, total_profit = calculate_profit_and_cost(combinaison)
                 if total_cost <= budget_max:
                     combinaisons.append(([action.nom for action in combinaison], total_cost, total_profit))
