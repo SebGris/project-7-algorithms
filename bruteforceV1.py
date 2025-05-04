@@ -1,7 +1,7 @@
 import csv
 import time
 from itertools import combinations
-from math import comb  # Importation pour calculer les coefficients binomiaux
+from math import comb
 from tqdm import tqdm
 
 
@@ -9,116 +9,63 @@ class Action:
     def __init__(self, nom, cout, benefPourcent):
         self.nom = nom
         self.cout = cout
-        self.benefPourcent = benefPourcent
         self.benefice_euros = round(cout * (benefPourcent / 100), 2)
 
 
 def load_actions_from_csv(file_path):
-    action_list = []
     with open(file_path, mode='r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            # Création d'une instance de la classe Action pour chaque ligne
-            # supprime le % de la colonne Bénéfice (%)
-            # et convertit en entier
-            action = Action(
+        return [
+            Action(
                 nom=row['Actions #'],
                 cout=int(row['Coût par action (en euros)']),
-                benefPourcent=int(
-                    row['Bénéfice (après 2 ans)'].replace('%', '')
-                )
+                benefPourcent=int(row['Bénéfice (après 2 ans)'].replace('%', ''))
             )
-            # Ajout de l'action à la liste
-            action_list.append(action)
-    return action_list
+            for row in csv.DictReader(file)
+        ]
 
 
-# Fonction pour calculer le profit total d'un portefeuille
-def calculate_profit(combinaison):
-    return sum(action.benefice_euros for action in combinaison)
-
-
-# Fonction pour calculer le cout total d'un portefeuille
-def calculate_total_cost(combinaison):
-    return sum(action.cout for action in combinaison)
+def calculate_profit_and_cost(combinaison):
+    total_cost = sum(action.cout for action in combinaison)
+    total_profit = sum(action.benefice_euros for action in combinaison)
+    return total_cost, total_profit
 
 
 def generate_combinations(action_list, budget_max):
-    """
-    Génère toutes les combinaisons possibles d'actions respectant le budget.
-
-    :param action_list: Liste d'objets Action
-    :param budget_max: Budget maximum (en euros)
-    :return: Liste des combinaisons sous forme de tuples
-             (action_names, total_cost, profit)
-    """
     combinaisons = []
     n = len(action_list)
     total_combinations = sum(comb(n, i) for i in range(1, n + 1))
-    # Utilisation de tqdm pour afficher la progression
-    with tqdm(
-        total=total_combinations,
-        desc="Génération des combinaisons"
-    ) as progress_bar:
+    with tqdm(total=total_combinations, desc="Génération des combinaisons") as progress_bar:
         for i in range(1, n + 1):
             for combinaison in combinations(action_list, i):
-                total_cost = calculate_total_cost(combinaison)
+                total_cost, total_profit = calculate_profit_and_cost(combinaison)
                 if total_cost <= budget_max:
-                    action_names = [action.nom for action in combinaison]
-                    profit = calculate_profit(combinaison)
-                    combinaisons.append((action_names, total_cost, profit))
+                    combinaisons.append(([action.nom for action in combinaison], total_cost, total_profit))
                 progress_bar.update(1)
     return combinaisons
 
 
-# Exemple d'utilisation
+def write_results_to_file(results, output_file):
+    header = f"{'Actions':<145} {'Coût total (€)':<15} {'Bénéfice (€)':<15}\n"
+    separator = "-" * 175 + "\n"
+    with open(output_file, mode="w", encoding="utf-8") as file:
+        file.write("Combinaisons d'actions respectant le budget (triées par bénéfice) :\n")
+        file.write(header)
+        file.write(separator)
+        with tqdm(total=len(results), desc="Écriture dans le fichier") as progress_bar:
+            for action_names, total_cost, profit in results:
+                file.write(f"{' '.join(action_names):<145} {total_cost:<15} {profit:.2f}\n".replace('.', ','))
+                progress_bar.update(1)
+
+
 def main():
-    # Chemin vers le fichier CSV
     csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
-    # Liste des actions
     action_list = load_actions_from_csv(csv_file)
-    # Mesure du temps d'exécution
     start_time = time.time()
     max_budget = 500
     valid_combinations = generate_combinations(action_list, max_budget)
-    combinations_generation_time = time.time() - start_time
-    print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
-    # Trie les résultats par bénéfice décroissant
     results = sorted(valid_combinations, key=lambda x: x[2], reverse=True)
-    # Affichage formaté sous forme de tableau
-    output_file = "resultat_combinations.txt"
-    with open(output_file, mode="w", encoding="utf-8") as file:
-        header = (
-            f"{'Actions':<145} "
-            f"{'Coût total (€)':<15} "
-            f"{'Bénéfice (€)':<15}\n"
-        )
-        separator = "-" * 175 + "\n"
-        file.write(
-            "Combinaisons d'actions respectant le budget "
-            "(triées par bénéfice) :\n"
-        )
-        file.write(header)
-        file.write(separator)
-        # Ajout de la jauge de progression pour l'écriture
-        with tqdm(
-            total=len(results),
-            desc="Écriture dans le fichier"
-        ) as progress_bar:
-            for action_names, total_cost, profit in results:
-                actions_str = " ".join(action_names)
-                formatted_line = (
-                    f"{actions_str:<145} {total_cost:<15} {profit:.2f}"
-                ).replace('.', ',')
-                file.write(formatted_line + "\n")
-                progress_bar.update(1)
-
-    execution_time = time.time() - start_time - combinations_generation_time
-    print(f"Temps d'exécution : {execution_time:.2f} secondes")
-    # Calcul et affichage du temps d'exécution
-    execution_time = time.time() - start_time
-    print(f"Résultat écrit dans le fichier : {output_file}")
-    print(f"Temps d'exécution total : {execution_time:.2f} secondes")
+    write_results_to_file(results, "resultat_combinations.txt")
+    print(f"Temps d'exécution total : {time.time() - start_time:.2f} secondes")
 
 
 if __name__ == "__main__":
