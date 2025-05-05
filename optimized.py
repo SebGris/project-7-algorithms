@@ -1,6 +1,5 @@
 import csv
 import time
-from tqdm import tqdm
 
 
 class Action:
@@ -43,6 +42,8 @@ def knapsack_optimization(action_list, budget_max):
             else:
                 # Maximum profit excluding the current action
                 dp[i][budget] = dp[i - 1][budget]
+            # Log pour suivre les mises à jour de dp
+            print(f"dp[{i}][{budget}] = {round(dp[i][budget], 2)} (action: {action.nom}, coût: {cost}, bénéfice: {profit})")
 
     # Trace back to find the selected actions
     selected_actions = []
@@ -66,10 +67,8 @@ def write_results_to_file(results, output_file):
         file.write("Combinaisons d'actions respectant le budget (triées par bénéfice) :\n")
         file.write(header)
         file.write(separator)
-        with tqdm(total=len(results), desc="Écriture dans le fichier") as progress_bar:
-            for action_names, total_cost, profit in results:
-                file.write(f"{' '.join(action_names):<145} {total_cost:<15} {profit:.2f}\n".replace('.', ','))
-                progress_bar.update(1)
+        for action_names, total_cost, profit in results:
+            file.write(f"{' '.join(action_names):<145} {total_cost:<15} {profit:.2f}\n".replace('.', ','))
 
 
 def main():
