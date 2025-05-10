@@ -22,20 +22,21 @@ def load_actions_from_csv(file_path):
 
 
 def knapsack_optimization(action_list, budget_max):
-    # Nombre total d'actions
+    # Total number of shares
     n = len(action_list)
 
-    # Initialisation d'une table pour la programmation dynamique
-    # dp[i][w] représente le bénéfice maximum réalisable avec les i premières actions et un budget w
-    dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]
+    # Initialising a table for dynamic programming
+    # dp[i][w] represents the maximum profit achievable with the first i actions and a budget w
+    dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]  # from 0 to 20
 
+    dp_update_log = [""] * (budget_max + 1)
     # Iterate over each action
-    for i in range(1, n + 1):
+    for i in range(1, n + 1):  # from 1 to 20
         action = action_list[i - 1]
         cost = action.cout
         profit = action.benefice_euros
         # Iterate over each possible budget
-        for budget in range(budget_max + 1):
+        for budget in range(budget_max + 1):  # range start to 0
             if cost <= budget:
                 # Maximum profit including the current action
                 dp[i][budget] = max(dp[i - 1][budget], dp[i - 1][budget - cost] + profit)
@@ -43,12 +44,16 @@ def knapsack_optimization(action_list, budget_max):
                 # Maximum profit excluding the current action
                 dp[i][budget] = dp[i - 1][budget]
             # Log pour suivre les mises à jour de dp
-            print(f"dp[{i}][{budget}] = {round(dp[i][budget], 2)} (action: {action.nom}, coût: {cost}, bénéfice: {profit})")
+            if i == 7:
+                dp_update_log[budget] = f"dp[{i}][{budget}] = {round(dp[i][budget], 2)}"
 
+    # Log pour suivre les mises à jour de dp
+    for str in dp_update_log:
+        print(str)
     # Trace back to find the selected actions
     selected_actions = []
     budget = budget_max
-    for i in range(n, 0, -1):
+    for i in range(n, 0, -1):  # from 20 to 0 (0 is not included)
         if dp[i][budget] != dp[i - 1][budget]:
             action = action_list[i - 1]
             selected_actions.append(action.nom)
