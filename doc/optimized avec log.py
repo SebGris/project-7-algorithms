@@ -29,6 +29,7 @@ def knapsack_optimization(action_list, budget_max):
     # dp[i][w] represents the maximum profit achievable with the first i actions and a budget w
     dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]  # from 0 to 20
 
+    dp_update_log = [""] * (budget_max + 1)
     # Iterate over each action
     for i in range(1, n + 1):  # from 1 to 20
         action = action_list[i - 1]
@@ -42,7 +43,13 @@ def knapsack_optimization(action_list, budget_max):
             else:
                 # Maximum profit excluding the current action
                 dp[i][budget] = dp[i - 1][budget]
+            # Log pour suivre les mises à jour de dp
+            if i == 7:
+                dp_update_log[budget] = f"dp[{i}][{budget}] = {round(dp[i][budget], 2)}"
 
+    # Log pour suivre les mises à jour de dp
+    for str in dp_update_log:
+        print(str)
     # Trace back to find the selected actions
     selected_actions = []
     budget = budget_max
