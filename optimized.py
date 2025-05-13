@@ -29,7 +29,7 @@ def knapsack_optimization(action_list, budget_max):
     # dp[i][w] represents the maximum profit achievable with the first i actions and a budget w
     dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]  # from 0 to 20
 
-    # Iterate over each action
+    # Iterate over each action O(n * budget_max)
     for i in range(1, n + 1):  # from 1 to 20
         action = action_list[i - 1]
         cost = action.cout
@@ -38,7 +38,9 @@ def knapsack_optimization(action_list, budget_max):
         for budget in range(budget_max + 1):  # range start to 0
             if cost <= budget:
                 # Maximum profit including the current action
-                dp[i][budget] = max(dp[i - 1][budget], dp[i - 1][budget - cost] + profit)
+                previous_action_profit_for_budget = dp[i - 1][budget]
+                best_profit_action = dp[i - 1][budget - cost] 
+                dp[i][budget] = max(previous_action_profit_for_budget, best_profit_action + profit)
             else:
                 # Maximum profit excluding the current action
                 dp[i][budget] = dp[i - 1][budget]
