@@ -66,6 +66,19 @@ def load_actions_from_csv(file_path):
 
 
 def knapsack_optimization(action_list, budget_max):
+    if budget_max % 1 != 0:
+        # If the budget is a float, multiply it by 100 to work with integers.
+        budget_max = budget_max * 100
+        # costs and profits multiplied by 100
+        action_list = [
+            Action(
+                action.name,
+                int(action.cost * 100),
+                profit_euros=int(action.profit_euros * 100)
+            )
+            for action in action_list
+        ]
+
     # Total number of shares
     n = len(action_list)
 
