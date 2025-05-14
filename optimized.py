@@ -72,26 +72,24 @@ def write_results_to_file(results, output_file):
 
 
 def main():
-    csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
-    action_list = load_actions_from_csv(csv_file)
-    start_time = time.time()
+    csv_files = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
     max_budget = 500
-
+    start_time = time.time()
     # Utilisation de l'optimisation par programmation dynamique
-    selected_actions, total_cost, total_profit = knapsack_optimization(action_list, max_budget)
-    combinations_generation_time = time.time() - start_time
-    print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
-    # Écriture des résultats dans un fichier
-    output_file = "resultat_knapsack.txt"
-    results = [(selected_actions, total_cost, total_profit)]
-    write_results_to_file(results, output_file)
+    for csv_file in csv_files:
+        print(f"Traitement du fichier : {csv_file}")
+        # Chargement des actions depuis le fichier CSV
+        action_list = load_actions_from_csv(csv_file)
+        # Optimisation du sac à dos
+        selected_actions, total_cost, total_profit = knapsack_optimization(action_list, max_budget)
+        # Affichage des résultats
+        print(f"Actions sélectionnées : {', '.join(selected_actions)}")
+        print(f"Coût total : {total_cost} €")
+        print(f"Bénéfice total : {total_profit:.2f} €\n")
 
-    execution_time = time.time() - start_time - combinations_generation_time
-    print(f"Temps d'exécution : {execution_time:.2f} secondes")
-    # Calcul et affichage du temps d'exécution
     execution_time = time.time() - start_time
-    print(f"Résultat écrit dans le fichier : {output_file}")
-    print(f"Temps d'exécution total : {execution_time:.2f} secondes")
+    print(f"Temps d'exécution : {execution_time:.2f} secondes")
+
 
 if __name__ == "__main__":
     main()
