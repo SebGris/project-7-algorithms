@@ -1,0 +1,4 @@
+Combinaisons d'actions respectant le budget (triées par bénéfice) :
+Actions                                                                                                                                           Coût total (€)  Bénéfice (€)   
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Action-10 Action-6 Action-13 Action-19 Action-4 Action-20 Action-5 Action-11                                                                      462             94,82

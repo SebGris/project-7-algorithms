@@ -6,6 +6,7 @@ class Action:
     def __init__(self, name, cost, benefice_pourcent):
         self.name = name
         self.cost = cost
+        self.benefice_pourcent = benefice_pourcent
         self.benefice_euros = round(cost * (benefice_pourcent / 100), 2)
 
 
@@ -21,43 +22,34 @@ def load_actions_from_csv(file_path):
         ]
 
 
-def knapsack_optimization(action_list, budget_max):
-    # Total number of shares
-    n = len(action_list)
+def greedy_selection(action_list, budget_max):
+    # Vérifie si la liste des actions est vide ou si le budget est invalide
+    if not action_list or budget_max <= 0:
+        return [], 0, 0
 
-    # Initialising a table for dynamic programming
-    # dp[i][w] represents the maximum profit achievable with the first i actions and a budget w
-    dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]  # from 0 to 20
+    # Trie les actions par ratio profit-coût en ordre décroissant
+    action_list.sort(key=lambda x: x.benefice_pourcent, reverse=True)
 
-    # Iterate over each action O(n * budget_max)
-    for i in range(1, n + 1):  # from 1 to 20
-        action = action_list[i - 1]
+    selected_actions = []  # Liste pour stocker les actions sélectionnées
+    total_profit = 0       # Profit total des actions sélectionnées
+    budget = 0             # Budget utilisé
+
+    # Itère sur chaque action triée
+    for action in action_list:
         cost = action.cost
         profit = action.benefice_euros
-        # Iterate over each possible budget
-        for budget in range(budget_max + 1):  # range start to 0
-            if cost <= budget:
-                # Maximum profit including the current action
-                previous_action_profit_for_budget = dp[i - 1][budget]
-                best_profit_action = dp[i - 1][budget - cost] 
-                dp[i][budget] = max(previous_action_profit_for_budget, best_profit_action + profit)
-            else:
-                # Maximum profit excluding the current action
-                dp[i][budget] = dp[i - 1][budget]
 
-    # Trace back to find the selected actions
-    selected_actions = []
-    budget = budget_max
-    for i in range(n, 0, -1):  # from 20 to 0 (0 is not included)
-        if dp[i][budget] != dp[i - 1][budget]:
-            action = action_list[i - 1]
+        # Ajoute l'action si elle ne dépasse pas le budget restant
+        if cost + budget <= budget_max:
             selected_actions.append(action.name)
-            budget -= action.cost
+            budget += cost
+            total_profit += profit
+        else:
+            break  # Arrête l'itération si l'action dépasse le budget
 
-    total_cost = sum(action.cost for action in action_list if action.name in selected_actions)
-    total_profit = dp[n][budget_max]
+    # Retourne les actions sélectionnées, le budget utilisé et le profit total
+    return selected_actions, budget, total_profit
 
-    return selected_actions, total_cost, total_profit
 
 
 def write_results_to_file(results, output_file):
@@ -78,11 +70,11 @@ def main():
     max_budget = 500
 
     # Utilisation de l'optimisation par programmation dynamique
-    selected_actions, total_cost, total_profit = knapsack_optimization(action_list, max_budget)
+    selected_actions, total_cost, total_profit = greedy_selection(action_list, max_budget)
     combinations_generation_time = time.time() - start_time
     print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
     # Écriture des résultats dans un fichier
-    output_file = "resultat_knapsack.txt"
+    output_file = "resultat_glouton.txt"
     results = [(selected_actions, total_cost, total_profit)]
     write_results_to_file(results, output_file)
 
