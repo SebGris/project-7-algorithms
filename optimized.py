@@ -1,21 +1,65 @@
 import csv
 import time
+import os
 
 
 class Action:
-    def __init__(self, name, cost, benefice_pourcent):
+    def __init__(self, name, cost, benefice_pourcent=None, profit_euros=None):
         self.name = name
         self.cost = cost
-        self.benefice_euros = round(cost * (benefice_pourcent / 100), 2)
+
+        if benefice_pourcent is not None:
+            self.benefice_pourcent = benefice_pourcent
+            self.profit_euros = round(cost * (benefice_pourcent / 100), 2)
+        elif profit_euros is not None:
+            self.profit_euros = profit_euros
+            self.benefice_pourcent = round((profit_euros / cost) * 100, 2)
+        else:
+            raise ValueError("Vous devez fournir soit 'benefice_pourcent', soit 'profit_euros'.")
 
 
 def load_actions_from_csv(file_path):
+    # Mappage des colonnes pour chaque fichier
+    column_mapping = {
+        "Liste+d'actions+-+P7+Python+-+Feuille+1.csv": {
+            "name": "Actions #",
+            "cost": "Coût par action (en euros)",
+            "benefice": "Bénéfice (après 2 ans)"
+        },
+        "dataset1_Python+P7.csv": {
+            "name": "name",
+            "cost": "price",
+            "benefice": "profit"
+        },
+        "dataset2_Python+P7.csv": {
+            "name": "name",
+            "cost": "price",
+            "benefice": "profit"
+        }
+    }
+
+    # Détection du mappage à utiliser
+    file_name = os.path.basename(file_path)
+    mapping = column_mapping.get(file_name)
+    if not mapping:
+        raise ValueError(f"Le fichier {file_name} n'est pas pris en charge.")
+
+    # Chargement des données avec le mappage
     with open(file_path, mode='r', encoding='utf-8') as file:
         return [
             Action(
-                name=row['Actions #'],
-                cost=int(row['Coût par action (en euros)']),
-                benefice_pourcent=int(row['Bénéfice (après 2 ans)'].replace('%', ''))
+                name=row[mapping["name"]],
+                cost=round(float(row[mapping["cost"]]), 2),
+                benefice_pourcent=(
+                    int(row[mapping["benefice"]].replace('%', ''))
+                    if '%' in row[mapping["benefice"]]
+                    else None
+                ),
+                profit_euros=(
+                    float(row[mapping["benefice"]])
+                    if '%' not in row[mapping["benefice"]]
+                    else None
+                )
             )
             for row in csv.DictReader(file)
         ]
@@ -33,7 +77,7 @@ def knapsack_optimization(action_list, budget_max):
     for i in range(1, n + 1):  # from 1 to 20
         action = action_list[i - 1]
         cost = action.cost
-        profit = action.benefice_euros
+        profit = action.profit_euros
         # Iterate over each possible budget
         for budget in range(budget_max + 1):  # range start to 0
             if cost <= budget:
