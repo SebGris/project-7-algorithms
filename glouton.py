@@ -51,7 +51,6 @@ def greedy_selection(action_list, budget_max):
     return selected_actions, budget, total_profit
 
 
-
 def write_results_to_file(results, output_file):
     header = f"{'Actions':<145} {'Coût total (€)':<15} {'Bénéfice (€)':<15}\n"
     separator = "-" * 175 + "\n"
@@ -84,6 +83,7 @@ def main():
     execution_time = time.time() - start_time
     print(f"Résultat écrit dans le fichier : {output_file}")
     print(f"Temps d'exécution total : {execution_time:.2f} secondes")
+
 
 if __name__ == "__main__":
     main()
