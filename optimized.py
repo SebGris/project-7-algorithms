@@ -26,17 +26,17 @@ def load_actions_from_csv(file_path):
         "Liste+d'actions+-+P7+Python+-+Feuille+1.csv": {
             "name": "Actions #",
             "cost": "Coût par action (en euros)",
-            "benefice": "Bénéfice (après 2 ans)"
+            "benefice_or_profit": "Bénéfice (après 2 ans)"
         },
         "dataset1_Python+P7.csv": {
             "name": "name",
             "cost": "price",
-            "benefice": "profit"
+            "benefice_or_profit": "profit"
         },
         "dataset2_Python+P7.csv": {
             "name": "name",
             "cost": "price",
-            "benefice": "profit"
+            "benefice_or_profit": "profit"
         }
     }
 
@@ -54,13 +54,13 @@ def load_actions_from_csv(file_path):
                 name=row[mapping["name"]],
                 cost=round(float(row[mapping["cost"]]), 2),
                 benefice_pourcent=(
-                    int(row[mapping["benefice"]].replace('%', ''))
-                    if '%' in row[mapping["benefice"]]
+                    int(row[mapping["benefice_or_profit"]].replace('%', ''))
+                    if '%' in row[mapping["benefice_or_profit"]]
                     else None
                 ),
                 profit_euros=(
-                    float(row[mapping["benefice"]])
-                    if '%' not in row[mapping["benefice"]]
+                    float(row[mapping["benefice_or_profit"]])
+                    if '%' not in row[mapping["benefice_or_profit"]]
                     else None
                 )
             )
