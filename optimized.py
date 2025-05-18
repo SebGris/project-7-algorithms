@@ -6,6 +6,9 @@ CSV_FOLDER = "csv_files"
 
 
 class Action:
+    """
+    Classe représentant une action avec son nom, son coût et son bénéfice.
+    """
     def __init__(self, name, cost, benefice_pourcent=None, profit_euros=None):
         self.name = name
         self.cost = cost
@@ -21,6 +24,9 @@ class Action:
 
 
 def get_column_mapping(file_name):
+    """
+    Map the column names from the CSV file to the Action class attributes.
+    """
     column_mapping = {
         "Liste+d'actions+-+P7+Python+-+Feuille+1.csv": {
             "name": "Actions #",
@@ -45,6 +51,9 @@ def get_column_mapping(file_name):
 
 
 def map_row_to_action(row, mapping):
+    """
+    Map a row from the CSV file to an Action object based on the provided mapping.
+    """
     name = row[mapping["name"]]
     cost_value = float(row[mapping["cost"]])
     cost = round(cost_value, 2) if cost_value % 1 != 0 else int(cost_value)
@@ -59,6 +68,9 @@ def map_row_to_action(row, mapping):
 
 
 def load_actions_from_csv(file_path):
+    """
+    Load actions from a CSV file and return a list of Action objects.
+    """
     file_name = os.path.basename(file_path)
     mapping = get_column_mapping(file_name)
     with open(file_path, mode='r', encoding='utf-8') as file:
@@ -66,6 +78,10 @@ def load_actions_from_csv(file_path):
 
 
 def knapsack_optimization(action_list, budget_max):
+    """
+    Optimise le choix des actions à acheter en fonction du budget maximum.
+    Utilise l'algorithme du sac à dos (Knapsack Problem) pour maximiser le bénéfice.
+    """
     if budget_max % 1 != 0:
         # If the budget is a float, multiply it by 100 to work with integers.
         budget_max = int(budget_max * 100)
@@ -118,6 +134,11 @@ def knapsack_optimization(action_list, budget_max):
 
 
 def main():
+    """
+    Fonction principale pour exécuter le programme. 
+    Charge les actions depuis les fichiers CSV, effectue l'optimisation du sac à dos
+    et affiche les résultats.
+    """
     csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
     max_budget = 500
     start_time = time.time()
