@@ -97,7 +97,7 @@ def knapsack_optimization(action_list, budget_max):
     # Iterate over each action O(n * budget_max)
     for i in range(1, n + 1):  # from 1 to 20
         action = action_list[i - 1]
-        cost = int(action.cost)
+        cost = action.cost
         profit = action.profit_euros
         # Iterate over each possible budget
         for budget in range(budget_max + 1):  # range start to 0
