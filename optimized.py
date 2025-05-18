@@ -2,6 +2,8 @@ import csv
 import time
 import os
 
+CSV_FOLDER = "csv_files"
+
 
 class Action:
     def __init__(self, name, cost, benefice_pourcent=None, profit_euros=None):
@@ -40,6 +42,7 @@ def load_actions_from_csv(file_path):
 
     # Détection du mappage à utiliser
     file_name = os.path.basename(file_path)
+    # Vérification du mappage
     mapping = column_mapping.get(file_name)
     if not mapping:
         raise ValueError(f"Le fichier {file_name} n'est pas pris en charge.")
@@ -129,11 +132,13 @@ def write_results_to_file(results, output_file):
 
 
 def main():
-    csv_files = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
+    csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
     max_budget = 500
     start_time = time.time()
     # Utilisation de l'optimisation par programmation dynamique
-    for csv_file in csv_files:
+    for csv_file in csv_files_names:
+        # Chemin complet du fichier CSV
+        csv_file = os.path.join(CSV_FOLDER, csv_file)
         print(f"Traitement du fichier : {csv_file}")
         # Chargement des actions depuis le fichier CSV
         action_list = load_actions_from_csv(csv_file)
