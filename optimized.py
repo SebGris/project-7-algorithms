@@ -125,17 +125,6 @@ def knapsack_optimization(action_list, budget_max):
     return selected_actions, total_cost, total_profit
 
 
-def write_results_to_file(results, output_file):
-    header = f"{'Actions':<145} {'Coût total (€)':<15} {'Bénéfice (€)':<15}\n"
-    separator = "-" * 175 + "\n"
-    with open(output_file, mode="w", encoding="utf-8") as file:
-        file.write("Combinaisons d'actions respectant le budget (triées par bénéfice) :\n")
-        file.write(header)
-        file.write(separator)
-        for action_names, total_cost, profit in results:
-            file.write(f"{' '.join(action_names):<145} {total_cost:<15} {profit:.2f}\n".replace('.', ','))
-
-
 def main():
     csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
     max_budget = 500
