@@ -52,7 +52,12 @@ def load_actions_from_csv(file_path):
         return [
             Action(
                 name=row[mapping["name"]],
-                cost=round(float(row[mapping["cost"]]), 2),
+                # If the cost is a float, round it to 2 decimal places
+                cost=(
+                    round(float(row[mapping["cost"]]), 2)
+                    if float(row[mapping["cost"]]) % 1 != 0
+                    else int(row[mapping["cost"]])
+                ),
                 benefice_pourcent=(
                     int(row[mapping["benefice_or_profit"]].replace('%', ''))
                     if '%' in row[mapping["benefice_or_profit"]]
@@ -71,13 +76,13 @@ def load_actions_from_csv(file_path):
 def knapsack_optimization(action_list, budget_max):
     if budget_max % 1 != 0:
         # If the budget is a float, multiply it by 100 to work with integers.
-        budget_max = budget_max * 100
+        budget_max = int(budget_max * 100)
         # costs and profits multiplied by 100
         action_list = [
             Action(
                 action.name,
-                int(action.cost * 100),
-                profit_euros=int(action.profit_euros * 100)
+                action.cost * 100,
+                profit_euros=action.profit_euros * 100
             )
             for action in action_list
         ]
@@ -92,14 +97,14 @@ def knapsack_optimization(action_list, budget_max):
     # Iterate over each action O(n * budget_max)
     for i in range(1, n + 1):  # from 1 to 20
         action = action_list[i - 1]
-        cost = action.cost
+        cost = int(action.cost)
         profit = action.profit_euros
         # Iterate over each possible budget
         for budget in range(budget_max + 1):  # range start to 0
             if cost <= budget:
                 # Maximum profit including the current action
                 previous_action_profit_for_budget = dp[i - 1][budget]
-                best_profit_action = dp[i - 1][budget - cost] 
+                best_profit_action = dp[i - 1][budget - cost]
                 dp[i][budget] = max(previous_action_profit_for_budget, best_profit_action + profit)
             else:
                 # Maximum profit excluding the current action
