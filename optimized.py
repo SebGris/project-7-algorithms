@@ -7,7 +7,7 @@ CSV_FOLDER = "csv_files"
 
 class Action:
     """
-    Classe représentant une action avec son nom, son coût et son bénéfice.
+    Class representing an action with its name, cost and benefit.
     """
     def __init__(self, name, cost, benefice_pourcent=None, profit_euros=None):
         self.name = name
@@ -79,8 +79,8 @@ def load_actions_from_csv(file_path):
 
 def knapsack_optimization(action_list, budget_max):
     """
-    Optimise le choix des actions à acheter en fonction du budget maximum.
-    Utilise l'algorithme du sac à dos (Knapsack Problem) pour maximiser le bénéfice.
+    Optimises the choice of shares to buy according to the maximum budget.
+    Use the Knapsack Problem algorithm to maximise profit.
     """
     if budget_max % 1 != 0:
         # If the budget is a float, multiply it by 100 to work with integers.
@@ -135,9 +135,9 @@ def knapsack_optimization(action_list, budget_max):
 
 def main():
     """
-    Fonction principale pour exécuter le programme. 
-    Charge les actions depuis les fichiers CSV, effectue l'optimisation du sac à dos
-    et affiche les résultats.
+    Main function for running the programme.
+    Loads the actions from the CSV files, optimises the backpack and displays
+    the results.
     """
     csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
     max_budget = 500
