@@ -99,6 +99,7 @@ def load_actions_from(df):
         else:
             benefice_pourcent = None
             profit_euros = float(benefice_str)
+        print(f"Action : {name}, Coût : {cost}, Bénéfice : {benefice_str}")
         actions.append(Action(name=name, cost=cost, benefice_pourcent=benefice_pourcent, profit_euros=profit_euros))
     return actions
 
@@ -130,7 +131,8 @@ def knapsack_optimization(action_list, budget_max):
 
     # Total number of shares
     n = len(action_list)
-
+    print(f"Nombre d'actions : {n}")
+    print(f"Budget maximum : {budget_max} €")
     # Initialising a table for dynamic programming
     # dp[i][w] represents the maximum profit achievable with the first i actions and a budget w
     dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]  # from 0 to 20
