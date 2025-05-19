@@ -199,9 +199,9 @@ def main():
     """
     csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
     max_budget = 500
-    start_time = time.time()
     # Utilisation de l'optimisation par programmation dynamique
     for csv_file in csv_files_names:
+        start_time = time.time()
         # Chemin complet du fichier CSV
         csv_file_path = os.path.join(CSV_FOLDER, csv_file)
         print(f"Traitement du fichier : {csv_file_path}")
@@ -216,10 +216,9 @@ def main():
         # Affichage des résultats
         print(f"Actions sélectionnées : {', '.join(selected_actions)}")
         print(f"Coût total : {total_cost} €")
-        print(f"Bénéfice total : {total_profit:.2f} €\n")
-
-    execution_time = time.time() - start_time
-    print(f"Temps d'exécution : {execution_time:.2f} secondes")
+        print(f"Bénéfice total : {total_profit:.2f} €")
+        execution_time = time.time() - start_time
+        print(f"Temps d'exécution : {execution_time:.2f} secondes\n")
 
 
 if __name__ == "__main__":

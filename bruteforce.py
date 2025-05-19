@@ -2,7 +2,6 @@ import csv
 import os
 import time
 from itertools import combinations
-from math import comb
 from tqdm import tqdm
 
 CSV_FOLDER = "csv_files"
@@ -36,7 +35,7 @@ def calculate_profit_and_cost(combinaison):
 def generate_combinations(action_list, budget_max):  # O(n * 2^n)
     combinaisons = []
     action_count = len(action_list)
-    total_combinations = sum(comb(action_count, i) for i in range(1, action_count + 1))
+    total_combinations = 2 ** action_count - 1  # O(2^n)
     with tqdm(total=total_combinations, desc="Génération des combinaisons") as progress_bar:
         for i in range(1, action_count + 1):  # O(n)
             for combinaison in combinations(action_list, i):  # O(2^n)
