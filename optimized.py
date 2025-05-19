@@ -122,8 +122,8 @@ def knapsack_optimization(action_list, budget_max):
         action_list = [
             Action(
                 action.name,
-                action.cost * 100,
-                profit_euros=action.profit_euros * 100
+                int(action.cost * 100),
+                profit_euros=int(action.profit_euros * 100)
             )
             for action in action_list
         ]
@@ -162,6 +162,12 @@ def knapsack_optimization(action_list, budget_max):
 
     total_cost = sum(action.cost for action in action_list if action.name in selected_actions)
     total_profit = dp[n][budget_max]
+
+    if price_with_decimal:
+        # Convert costs back to euros
+        total_cost = round(total_cost / 100, 2)
+        # Convert profits back to euros
+        total_profit = round(total_profit / 100, 2)
 
     return selected_actions, total_cost, total_profit
 
