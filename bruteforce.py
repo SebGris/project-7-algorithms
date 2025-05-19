@@ -1,8 +1,11 @@
 import csv
+import os
 import time
 from itertools import combinations
 from math import comb
 from tqdm import tqdm
+
+CSV_FOLDER = "csv_files"
 
 
 class Action:
@@ -59,16 +62,17 @@ def write_results_to_file(results, output_file):
 
 def main():
     csv_file = "Liste+d'actions+-+P7+Python+-+Feuille+1.csv"
-    action_list = load_actions_from_csv(csv_file)
+    csv_file_path = os.path.join(CSV_FOLDER, csv_file)
+    action_list = load_actions_from_csv(csv_file_path)
     start_time = time.time()
     max_budget = 500
     valid_combinations = generate_combinations(action_list, max_budget)
     combinations_generation_time = time.time() - start_time
-    print(f"Temps d'exécution : {combinations_generation_time:.2f} secondes")
+    print(f"Temps d'exécution pour 'generate_combinations' : {combinations_generation_time:.2f} secondes")
     results = sorted(valid_combinations, key=lambda x: x[2], reverse=True)
     write_results_to_file(results, "resultat_combinations.txt")
     execution_time = time.time() - start_time - combinations_generation_time
-    print(f"Temps d'exécution : {execution_time:.2f} secondes")
+    print(f"Temps d'exécution pour 'write_results_to_file' : {execution_time:.2f} secondes")
     print(f"Temps d'exécution total : {time.time() - start_time:.2f} secondes")
 
 

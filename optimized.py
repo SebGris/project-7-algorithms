@@ -203,14 +203,14 @@ def main():
     # Utilisation de l'optimisation par programmation dynamique
     for csv_file in csv_files_names:
         # Chemin complet du fichier CSV
-        csv_file = os.path.join(CSV_FOLDER, csv_file)
-        print(f"Traitement du fichier : {csv_file}")
+        csv_file_path = os.path.join(CSV_FOLDER, csv_file)
+        print(f"Traitement du fichier : {csv_file_path}")
         # si le nom du fichier commence par "dataset", on nettoie les données
-        if os.path.basename(csv_file).startswith("dataset"):
-            action_list = load_actions_from(clean_data(csv_file))
+        if os.path.basename(csv_file_path).startswith("dataset"):
+            action_list = load_actions_from(clean_data(csv_file_path))
         else:
             # Chargement des actions depuis le fichier CSV
-            action_list = load_actions_from_csv(csv_file)
+            action_list = load_actions_from_csv(csv_file_path)
         # Optimisation du sac à dos
         selected_actions, total_cost, total_profit = knapsack_optimization(action_list, max_budget)
         # Affichage des résultats
