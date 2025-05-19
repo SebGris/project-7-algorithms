@@ -99,7 +99,6 @@ def load_actions_from(df):
         else:
             benefice_pourcent = None
             profit_euros = float(benefice_str)
-        print(f"Action : {name}, Coût : {cost}, Bénéfice : {benefice_str}")
         actions.append(Action(name=name, cost=cost, benefice_pourcent=benefice_pourcent, profit_euros=profit_euros))
     return actions
 
@@ -132,7 +131,6 @@ def knapsack_optimization(action_list, budget_max):
     # Total number of shares
     n = len(action_list)
     print(f"Nombre d'actions : {n}")
-    print(f"Budget maximum : {budget_max} €")
     # Initialising a table for dynamic programming
     # dp[i][w] represents the maximum profit achievable with the first i actions and a budget w
     dp = [[0 for _ in range(budget_max + 1)] for _ in range(n + 1)]  # from 0 to 20
@@ -180,13 +178,16 @@ def clean_data(file_path):
     """
     # chargement et affichage des données
     data = pd.read_csv(file_path)
-    # print(data)
     print("Nombre de nulls par colonne :")
-    print(data.isnull().sum())
+    # print(data.isnull().sum())
     price_count = data['price'].count()
     # Suppression des lignes où price est négatif ou nul
     data = data[data['price'] > 0]
     print(f"Nombre de lignes supprimées (price <= 0) : {price_count - data['price'].count()}")
+    # Ajouter une colonne 'benefice_pourcent' pour le calcul du bénéfice
+    data['benefice_pourcent'] = data['profit'] / data['price'] * 100
+    # Suppression des lignes où benefice_pourcent est supérieur à 50%
+    data = data[data['benefice_pourcent'] <= 40]
     return data
 
 
