@@ -1,6 +1,7 @@
 import csv
 import time
 import os
+import pandas as pd
 
 CSV_FOLDER = "csv_files"
 
@@ -77,13 +78,45 @@ def load_actions_from_csv(file_path):
         return [map_row_to_action(row, mapping) for row in csv.DictReader(file)]
 
 
+def load_actions_from(df):
+    """
+    Convertit un DataFrame pandas en liste d'objets Action pour les datasets.
+    """
+    mapping = {
+        "name": "name",
+        "cost": "price",
+        "benefice_or_profit": "profit"
+    }
+    actions = []
+    for _, row in df.iterrows():
+        name = row[mapping["name"]]
+        cost_value = float(row[mapping["cost"]])
+        cost = round(cost_value, 2) if cost_value % 1 != 0 else int(cost_value)
+        benefice_str = str(row[mapping["benefice_or_profit"]])
+        if '%' in benefice_str:
+            benefice_pourcent = int(benefice_str.replace('%', ''))
+            profit_euros = None
+        else:
+            benefice_pourcent = None
+            profit_euros = float(benefice_str)
+        actions.append(Action(name=name, cost=cost, benefice_pourcent=benefice_pourcent, profit_euros=profit_euros))
+    return actions
+
+
 def knapsack_optimization(action_list, budget_max):
     """
     Optimises the choice of shares to buy according to the maximum budget.
     Use the Knapsack Problem algorithm to maximise profit.
     """
-    if budget_max % 1 != 0:
-        # If the budget is a float, multiply it by 100 to work with integers.
+    price_with_decimal = False
+    # Check if any action has a decimal cost
+    for action in action_list:
+        if isinstance(action.cost, float) and not action.cost.is_integer():
+            # print(f"L'action '{action.name}' a un prix décimal : {action.cost}")
+            price_with_decimal = True
+            break
+
+    if price_with_decimal:
         budget_max = int(budget_max * 100)
         # costs and profits multiplied by 100
         action_list = [
@@ -133,6 +166,22 @@ def knapsack_optimization(action_list, budget_max):
     return selected_actions, total_cost, total_profit
 
 
+def clean_data(file_path):
+    """
+    Clean the dataset by removing rows with negative or zero prices.
+    """
+    # chargement et affichage des données
+    data = pd.read_csv(file_path)
+    # print(data)
+    print("Nombre de nulls par colonne :")
+    print(data.isnull().sum())
+    price_count = data['price'].count()
+    # Suppression des lignes où price est négatif ou nul
+    data = data[data['price'] > 0]
+    print(f"Nombre de lignes supprimées (price <= 0) : {price_count - data['price'].count()}")
+    return data
+
+
 def main():
     """
     Main function for running the programme.
@@ -147,8 +196,12 @@ def main():
         # Chemin complet du fichier CSV
         csv_file = os.path.join(CSV_FOLDER, csv_file)
         print(f"Traitement du fichier : {csv_file}")
-        # Chargement des actions depuis le fichier CSV
-        action_list = load_actions_from_csv(csv_file)
+        # si le nom du fichier commence par "dataset", on nettoie les données
+        if os.path.basename(csv_file).startswith("dataset"):
+            action_list = load_actions_from(clean_data(csv_file))
+        else:
+            # Chargement des actions depuis le fichier CSV
+            action_list = load_actions_from_csv(csv_file)
         # Optimisation du sac à dos
         selected_actions, total_cost, total_profit = knapsack_optimization(action_list, max_budget)
         # Affichage des résultats
