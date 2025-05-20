@@ -103,6 +103,20 @@ def load_actions_from(df):
     return actions
 
 
+def display_dataframe_overview(df):
+    """
+    Displays the first 5 lines of the DataFrame.
+    """
+    print("Voici les 5 premières lignes du DataFrame :")
+    print(df.head(5))
+    print("\nVoici les 5 dernières lignes du DataFrame :")
+    print(df.tail(5))
+    print("\nVoici les informations sur le DataFrame :")
+    print(df.info())
+    print("\nVoici la description du DataFrame :")
+    print(df.describe())
+
+
 def knapsack_optimization(action_list, budget_max):
     """
     Optimises the choice of shares to buy according to the maximum budget.
@@ -204,6 +218,7 @@ def main():
         print(f"Traitement du fichier : {csv_file_path}")
         # si le nom du fichier commence par "dataset", on nettoie les données
         if os.path.basename(csv_file_path).startswith("dataset"):
+            display_dataframe_overview(pd.read_csv(csv_file_path))
             action_list = load_actions_from(clean_data(csv_file_path))
         else:
             # Chargement des actions depuis le fichier CSV
