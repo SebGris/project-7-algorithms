@@ -141,9 +141,9 @@ def knapsack_optimization(action_list, budget_max):
         profit = action.profit_euros
         # Iterate over each possible budget
         for budget in range(budget_max + 1):  # range start to 0
+            profit_previous_action_for_budget = dp[i - 1][budget]
             if cost <= budget:
                 # Maximum profit including the current action
-                profit_previous_action_for_budget = dp[i - 1][budget]
                 best_profit_action = dp[i - 1][budget - cost]
                 dp[i][budget] = max(profit_previous_action_for_budget, best_profit_action + profit)
             else:
@@ -177,8 +177,6 @@ def clean_data(file_path):
     """
     # chargement et affichage des données
     data = pd.read_csv(file_path)
-    print("Nombre de nulls par colonne :")
-    # print(data.isnull().sum())
     price_count = data['price'].count()
     # Suppression des lignes où price est négatif ou nul
     data = data[data['price'] > 0]
