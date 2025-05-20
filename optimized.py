@@ -112,7 +112,6 @@ def knapsack_optimization(action_list, budget_max):
     # Check if any action has a decimal cost
     for action in action_list:
         if isinstance(action.cost, float) and not action.cost.is_integer():
-            # print(f"L'action '{action.name}' a un prix décimal : {action.cost}")
             price_with_decimal = True
             break
 
@@ -144,12 +143,12 @@ def knapsack_optimization(action_list, budget_max):
         for budget in range(budget_max + 1):  # range start to 0
             if cost <= budget:
                 # Maximum profit including the current action
-                previous_action_profit_for_budget = dp[i - 1][budget]
+                profit_previous_action_for_budget = dp[i - 1][budget]
                 best_profit_action = dp[i - 1][budget - cost]
-                dp[i][budget] = max(previous_action_profit_for_budget, best_profit_action + profit)
+                dp[i][budget] = max(profit_previous_action_for_budget, best_profit_action + profit)
             else:
                 # Maximum profit excluding the current action
-                dp[i][budget] = dp[i - 1][budget]
+                dp[i][budget] = profit_previous_action_for_budget
 
     # Trace back to find the selected actions
     selected_actions = []
