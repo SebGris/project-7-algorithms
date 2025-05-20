@@ -1,0 +1,14 @@
+Explications :
+Chargement des données : Utilisez pandas pour charger votre jeu de données à partir d'un fichier CSV.
+
+Affichage des premières lignes : Utilisez data.head() pour afficher les premières lignes du jeu de données.
+
+Statistiques descriptives : Utilisez data.describe() pour obtenir des statistiques descriptives des variables numériques.
+
+Visualisation de la distribution : Utilisez data.hist() pour visualiser la distribution des variables numériques.
+
+Diagramme de boîte : Utilisez sns.boxplot() pour visualiser les valeurs aberrantes.
+
+Matrice de corrélation : Utilisez data.corr() et sns.heatmap() pour visualiser la matrice de corrélation.
+
+Analyse des valeurs manquantes : Utilisez data.isnull().sum() pour identifier les valeurs manquantes et sns.heatmap() pour les visualiser.
