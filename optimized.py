@@ -195,10 +195,12 @@ def clean_data(file_path):
     # Suppression des lignes où price est négatif ou nul
     data = data[data['price'] > 0]
     print(f"Nombre de lignes supprimées (price <= 0) : {price_count - data['price'].count()}")
+    # Nettoyage des doublons
+    data = data.drop_duplicates(subset=['name'])
     # Ajouter une colonne 'benefice_pourcent' pour le calcul du bénéfice
-    data['benefice_pourcent'] = data['profit'] / data['price'] * 100
+    # data['benefice_pourcent'] = data['profit'] / data['price'] * 100
     # Suppression des lignes où benefice_pourcent est supérieur à 50%
-    data = data[data['benefice_pourcent'] <= 40]
+    # data = data[data['benefice_pourcent'] <= 40]
     return data
 
 
@@ -208,7 +210,8 @@ def main():
     Loads the actions from the CSV files, optimises the backpack and displays
     the results.
     """
-    csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
+    # csv_files_names = ["Liste+d'actions+-+P7+Python+-+Feuille+1.csv", "dataset1_Python+P7.csv", "dataset2_Python+P7.csv"]
+    csv_files_names = ["dataset1_Python+P7.csv"]
     max_budget = 500
     # Utilisation de l'optimisation par programmation dynamique
     for csv_file in csv_files_names:
