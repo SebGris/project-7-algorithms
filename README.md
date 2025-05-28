@@ -1,4 +1,5 @@
 # Projet algo
+
 1) Solution brute-force
 
 Un algorithme qui maximisera le profit réalisé par nos clients après deux ans d'investissement.
@@ -19,4 +20,6 @@ un jeu de diapositives contenant les éléments suivants :
 - L'algorithme choisi pour la version optimisée, et les limites de l'algorithme (cas limites)  
 - Une comparaison de l'efficacité et des performances de l'algorithme de force brute par rapport à l'algorithme optimisé en utilisant la notation Big-O, la complexité temporelle et l'analyse de la mémoire  
 
- 
+ ## ✨ À propos
+
+Ce projet a été réalisé dans le cadre du parcours **Développeur d'application Python** – OpenClassrooms.
